@@ -1,33 +1,120 @@
 package com.lulea;
-
 import java.util.Scanner;
 
+// Please don't forget to add pseudocode to your methods and classes.
 public class Main {
-    private static final Scanner scanner = new Scanner(System.in);
+    //Creation of scanner object.
+    private static Scanner userInputScanner = new Scanner(System.in);
 
-    // Pseudocode:
-    // 1. Repeatedly ask user for radius and height until 'q' is entered.
-    //    - Calculate and print circle area, cone area, and cone volume.
-    // 2. Then ask for numerator and denominator until 'q'.
-    //    - Call fraction(), print result using printFraction().
+    //Constants
+    static final int QUIT = -1;
 
+    /**
+     * This method should be used only for unit testing on CodeGrade. Do not change this method!
+     * Do not remove this method!
+     * Swaps userInputScanner with a custom scanner object bound to a test input stream
+     *
+     * @param inputScanner - test scanner object
+     */
+    public static void injectInput(final Scanner inputScanner) {
+        userInputScanner = inputScanner;
+    }
+
+    public static void main(final String[] args) {
+        int radius = 0;
+        int height = 0;
+        int numerator = 0;
+        int denominator = 0;
+
+        //Print the header of the program for area and volume.
+        System.out.println("----------------------------------");
+        System.out.println("# Test of area and volume methods");
+        System.out.println("----------------------------------");
+
+        // While loop that runs until user enters "q" for area and volume.
+        while (true) {
+            radius = input();
+            if (radius == QUIT) {
+                break;
+            }
+
+            height = input();
+            if (height == QUIT) {
+                break;
+            }
+
+            System.out.println("r = " + radius + ", h = " + height);
+            System.out.printf("Circle area: %.2f %n", area(radius));
+            System.out.printf("Cone area: %.2f %n", area(radius, height));
+            System.out.printf("Cone volume: %.2f %n", volume(radius, height));
+        }
+
+        //Print the header of the program for area and volume.
+        System.out.println("----------------------------------");
+        System.out.println("# Test of the fractional methods");
+        System.out.println("----------------------------------");
+
+        // While loop that runs until user enters "q" for the fraction part
+        while (true) {
+            numerator = input();
+            if (numerator == QUIT) {
+                break;
+            }
+
+            denominator = input();
+            if (denominator == QUIT) {
+                break;
+            }
+
+            System.out.printf("%d/%d = ", numerator, denominator);
+            printFraction(fraction(numerator, denominator));
+        }
+    }
+
+    // --- YOUR IMPLEMENTATION GOES BELOW THIS LINE ---
+
+    // Calculates the area of a circle using A = πr²
     public static double area(final int radius) {
         return Math.PI * Math.pow(radius, 2);
     }
 
-    public static double pythagoras(final int sideA, final int sideB) {
-        return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
-    }
-
+    // Calculates the lateral surface area of a cone A = πrs where s = hypotenuse
     public static double area(final int radius, final int height) {
         double s = pythagoras(radius, height);
         return Math.PI * radius * s;
     }
 
+    // Calculates hypotenuse using Pythagoras’ theorem: √(a² + b²)
+    public static double pythagoras(final int sideA, final int sideB) {
+        return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
+    }
+
+    // Calculates the volume of a cone using V = (1/3)πr²h
     public static double volume(final int radius, final int height) {
         return (1.0 / 3) * Math.PI * Math.pow(radius, 2) * height;
     }
 
+    // Reduces a fraction and returns {integer part, numerator, denominator}
+    public static int[] fraction(final int numerator, final int denominator) {
+        if (denominator == 0) {
+            return null;
+        }
+        if (numerator == 0) {
+            return new int[]{0, 0, 0};
+        }
+
+        int intPart = numerator / denominator;
+        int fracNumerator = numerator % denominator;
+        int fracDenominator = denominator;
+
+        int gcd = gcd(fracNumerator, fracDenominator);
+        fracNumerator /= gcd;
+        fracDenominator /= gcd;
+
+        return new int[]{intPart, fracNumerator, fracDenominator};
+    }
+
+    // Calculates the Greatest Common Divisor using Euclid's algorithm
     public static int gcd(final int a, final int b) {
         int x = Math.abs(a);
         int y = Math.abs(b);
@@ -36,24 +123,16 @@ public class Main {
             x = y;
             y = temp;
         }
+
         while (y != 0) {
-            int c = x % y;
+            int temp = x % y;
             x = y;
-            y = c;
+            y = temp;
         }
         return x;
     }
 
-    public static int[] fraction(final int numerator, final int denominator) {
-        if (denominator == 0) return null;
-        if (numerator == 0) return new int[] {0, 0, 0};
-
-        int intPart = numerator / denominator;
-        int rem = numerator % denominator;
-        int d = gcd(rem, denominator);
-        return new int[] {intPart, rem / d, denominator / d};
-    }
-
+    // Prints a reduced fraction in human-readable form
     public static void printFraction(final int[] parts) {
         if (parts == null) {
             System.out.println("Error");
@@ -68,21 +147,19 @@ public class Main {
         }
     }
 
+    // Reads input from user, returns a non-negative int or -1 if 'q' is entered
     public static int input() {
-        while (scanner.hasNext()) {
-            if (scanner.hasNextInt()) {
-                int val = scanner.nextInt();
-                return Math.abs(val);
+        while (userInputScanner.hasNext()) {
+            if (userInputScanner.hasNextInt()) {
+                return Math.abs(userInputScanner.nextInt());
             } else {
-                String s = scanner.next();
-                if (s.equalsIgnoreCase("q")) {
-                    return -1;
+                String token = userInputScanner.next();
+                if (token.equalsIgnoreCase("q")) {
+                    return QUIT;
                 }
-                // ignore invalid input
+                // Ignore invalid non-integer inputs
             }
         }
-        return -1;
+        return QUIT;
     }
-
-    // Main method is provided in CodeGrade
 }
