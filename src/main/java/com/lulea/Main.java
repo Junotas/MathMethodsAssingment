@@ -1,19 +1,29 @@
-package com.lulea;
-import java.util.Scanner;
+package com.lulea;import java.util.Scanner;
 
 // Please don't forget to add pseudocode to your methods and classes.
 public class Main {
     //Creation of scanner object.
-    private static final Scanner userInputScanner = new Scanner(System.in);
+    private static Scanner userInputScanner = new Scanner(System.in);
 
     //Constants
     static final int QUIT = -1;
 
+    /**
+     * This method should be used only for unit testing on CodeGrade. Do not change this method!
+     * Do not remove this method!
+     * Swaps userInputScanner with a custom scanner object bound to a test input stream
+     *
+     * @param inputScanner - test scanner object
+     */
+    public static void injectInput(final Scanner inputScanner) {
+        userInputScanner = inputScanner;
+    }
+
     public static void main(final String[] args) {
-        int radius;
-        int height;
-        int numerator;
-        int denominator;
+        int radius = 0;
+        int height = 0;
+        int numerator = 0;
+        int denominator = 0;
 
         //Print the header of the program for area and volume.
         System.out.println("----------------------------------");
